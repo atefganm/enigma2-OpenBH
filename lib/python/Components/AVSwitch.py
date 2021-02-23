@@ -533,19 +533,9 @@ def InitAVSwitch():
 	config.av.colorformat = ConfigSelection(choices=colorformat_choices, default="rgb")
 	config.av.aspectratio = ConfigSelection(choices={
 			"4_3_letterbox": _("4:3 Letterbox"),
-			"4_3_panscan": _("4:3 PanScan"),
-			"16_9": _("16:9"),
-			"16_9_always": _("16:9 always"),
-			"16_10_letterbox": _("16:10 Letterbox"),
-			"16_10_panscan": _("16:10 PanScan"),
-			"16_9_letterbox": _("16:9 Letterbox")},
-			default = "16_9")
-	config.av.aspect = ConfigSelection(choices={
-			"4:3": _("4:3"),
-			"16:9": _("16:9"),
-			"16:10": _("16:10"),
-			"auto": _("Automatic")},
-			default = "16:9")
+ 			"16:10": _("16:10"),
+ 			"auto": _("Automatic")},
+ 			default = "16:9")
 
 	# Some boxes have a redundant proc entry for policy2 choices, but some don't (The choices are from a 16:9 point of view anyways)
 	if os.path.exists("/proc/stb/video/policy2_choices"):
