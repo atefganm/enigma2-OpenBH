@@ -255,15 +255,15 @@ void eDBoxLCD::update()
 {
 #if !defined(HAVE_TEXTLCD) && !defined(HAVE_7SEGMENT)
 	if (lcdfd >= 0)
-	{
+ 	{
 		if (lcd_type == 0 || lcd_type == 2)
-		{
+ 		{
 			unsigned char raw[132*8];
 			int x, y, yy;
 			for (y=0; y<8; y++)
-			{
+ 			{
 				for (x=0; x<132; x++)
-				{
+ 				{
 					int pix=0;
 					for (yy=0; yy<8; yy++)
 					{
@@ -282,9 +282,9 @@ void eDBoxLCD::update()
 				}
 			}
 			write(lcdfd, raw, 132*8);
-		}
+ 		}
 		else if (lcd_type == 3)
-		{
+ 		{
 			/* for now, only support flipping / inverting for 8bpp displays */
 			if ((flipped || inverted) && _stride == res.width())
 			{
@@ -355,8 +355,8 @@ void eDBoxLCD::update()
 							unsigned int src = ((unsigned int*)_buffer)[offset];
 							((unsigned int*)gb_buffer)[offset] = src & 0xE007E007 | (src & 0x1F001F00) >>5 | (src & 0x00F800F8) << 5;
 						}
-					}
-					else
+ 					}
+ 					else
 					{//slow
 						for (int offset = 0; offset < _stride * res.height(); offset += 2)
 						{
@@ -368,17 +368,17 @@ void eDBoxLCD::update()
 					if (file != NULL)
 					{
 						fclose(file);
-					}
-				}
+ 					}
+ 				}
 #endif
 				else
 				{
 					write(lcdfd, _buffer, _stride * res.height());
 				}
-			}
-		}
+ 			}
+ 		}
 		else /* lcd_type == 1 */
-		{
+ 		{
 			unsigned char raw[64*64];
 			int x, y;
 			memset(raw, 0, 64*64);
@@ -402,11 +402,16 @@ void eDBoxLCD::update()
 					{
 						raw[y * 64 + x] = pix;
 					}
+ 				}
+ 			}
+			write(lcdfd, raw, 64*64);
 				}
 			}
-			write(lcdfd, raw, 64*64);
-		}
 	}
-	dumpLCD2PNG();
 #endif
+}
+
+void eDBoxLCD::dumpLCD(bool png)
+{
+	return;
 }

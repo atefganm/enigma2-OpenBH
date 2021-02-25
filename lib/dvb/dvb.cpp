@@ -109,7 +109,7 @@ eDVBResourceManager::eDVBResourceManager()
 		addAdapter(adapter, true);
 	}
 
-int fd = open("/proc/stb/info/model", O_RDONLY);
+	int fd = open("/proc/stb/info/model", O_RDONLY);
 	char tmp[16];
 	int rd = fd >= 0 ? read(fd, tmp, sizeof(tmp)) : 0;
 	if (fd >= 0)
@@ -139,62 +139,8 @@ int fd = open("/proc/stb/info/model", O_RDONLY);
 		m_boxtype = DM900;
 	else if (!strncmp(tmp, "dm920\n", rd))
 		m_boxtype = DM920;
-	else if (!strncmp(tmp, "Gigablue\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gb800solo\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gb800se\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gb800ue\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gb800seplus\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gb800ueplus\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbipbox\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbquad\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbquadplus\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbultra\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbultrase\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbultraue\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbultraueh\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbx1\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbx2\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbx3\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbx3h\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbquad4k\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbue4k\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "gbx34k\n", rd))
-		m_boxtype = GIGABLUE;
-	else if (!strncmp(tmp, "ebox5000\n", rd))
-		m_boxtype = DM800;
-	else if (!strncmp(tmp, "ebox5100\n", rd))
-		m_boxtype = DM800;
-	else if (!strncmp(tmp, "eboxlumi\n", rd))
-		m_boxtype = DM800;
-	else if (!strncmp(tmp, "ebox7358\n", rd))
-		m_boxtype = DM800SE;
-	else if (!strncmp(tmp, "wetekplay\n", rd))
-		m_boxtype = WETEKPLAY;
-	else if (!strncmp(tmp, "wetekplay2\n", rd))
-		m_boxtype = WETEKPLAY2;
-	else if (!strncmp(tmp, "wetekhub\n", rd))
-		m_boxtype = WETEKHUB;
 	else {
-		eDebug("[eDVBResourceManager] boxtype detection via /proc/stb/info not possible... use fallback via demux count!");
+		eDebug("boxtype detection via /proc/stb/info not possible... use fallback via demux count!\n");
 		if (m_demux.size() == 3)
 			m_boxtype = DM800;
 		else if (m_demux.size() < 5)
