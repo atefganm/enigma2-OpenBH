@@ -25,7 +25,6 @@ extern void bcm_accel_blit(
 		int dst_x, int dst_y, int dwidth, int dheight,
 		int pal_addr, int flags);
 #endif
-
 #ifdef HAVE_HISILICON_ACCEL
 extern void  dinobot_accel_register(void *p1,void *p2);
 extern void  dinibot_accel_notify(void);
@@ -177,28 +176,28 @@ void gFBDC::exec(const gOpcode *o)
 		fb->blit();
 #endif
 #ifdef CONFIG_ION
-       if (surface_back.data_phys)
-       {
-	    gUnmanagedSurface s(surface);
-	    surface = surface_back;
-	    surface_back = s;
+		if (surface_back.data_phys)
+		{
+			gUnmanagedSurface s(surface);
+			surface = surface_back;
+			surface_back = s;
 
-	    fb->waitVSync();
-	    if (surface.data_phys > surface_back.data_phys)
-	    {
-	    fb->setOffset(0);
-	    }
-	    else
-	    {
-		fb->setOffset(surface_back.y);
-	    }
-	    bcm_accel_blit(
-		surface_back.data_phys, surface_back.x, surface_back.y, surface_back.stride, 0,
-		surface.data_phys, surface.x, surface.y, surface.stride,
-		0, 0, surface.x, surface.y,
-	        0, 0, surface.x, surface.y,
-		0, 0);
-	}
+			fb->waitVSync();
+			if (surface.data_phys > surface_back.data_phys)
+			{
+				fb->setOffset(0);
+			}
+			else
+			{
+				fb->setOffset(surface_back.y);
+			}
+			bcm_accel_blit(
+				surface_back.data_phys, surface_back.x, surface_back.y, surface_back.stride, 0,
+				surface.data_phys, surface.x, surface.y, surface.stride,
+				0, 0, surface.x, surface.y,
+				0, 0, surface.x, surface.y,
+				0, 0);
+		}
 #endif
 #if defined(CONFIG_HISILICON_FB)
 		if(islocked()==0)
@@ -287,9 +286,9 @@ void gFBDC::setResolution(int xres, int yres, int bpp)
 	if (gAccel::getInstance())
 		gAccel::getInstance()->releaseAccelMemorySpace();
 #else
-   gRC *grc = gRC::getInstance();
-   if (grc)
-       grc->lock();
+	gRC *grc = gRC::getInstance();
+	if (grc)
+		grc->lock();
 #endif
 
 	fb->SetMode(xres, yres, bpp);
@@ -325,8 +324,8 @@ void gFBDC::setResolution(int xres, int yres, int bpp)
 		 surface.x, surface.y, surface.bpp, fb->Stride(), (fb->Available() - fb_size)/1024);
 
 #ifndef CONFIG_ION
-   /* accel is already set in fb.cpp */
-   eDebug("[gFBDC] %dkB available for acceleration surfaces.", (fb->Available() - fb_size)/1024);
+	/* accel is already set in fb.cpp */
+	eDebug("[gFBDC] %dkB available for acceleration surfaces.", (fb->Available() - fb_size)/1024);
 	if (gAccel::getInstance())
 		gAccel::getInstance()->setAccelMemorySpace(fb->lfb + fb_size, surface.data_phys + fb_size, fb->Available() - fb_size);
 #endif
@@ -354,8 +353,8 @@ void gFBDC::setResolution(int xres, int yres, int bpp)
 	m_pixmap = new gPixmap(&surface);
 
 #ifdef CONFIG_ION
-   if (grc)
-       grc->unlock();
+	if (grc)
+		grc->unlock();
 #endif
 }
 
