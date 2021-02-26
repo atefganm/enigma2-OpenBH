@@ -1,3 +1,5 @@
+from time import time, localtime, gmtime
+from os import path
 from fcntl import ioctl
 from struct import pack, unpack
 from boxbranding import getBoxType, getBrandOEM
@@ -61,7 +63,7 @@ def getFPWakeuptime():
 	ret = 0
 	try:
 		f = open("/proc/stb/fp/wakeup_time", "r")
-		ret = long(f.read()
+		ret = long(f.read())
 		f.close()
 	except IOError:
 		try:

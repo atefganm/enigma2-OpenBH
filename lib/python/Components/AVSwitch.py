@@ -26,12 +26,13 @@ has_avjack = SystemInfo["HaveAVJACK"]
 
 config.av = ConfigSubsection()
 if getBrandOEM() in ('azbox',):
-   config.av.edid_override = ConfigYesNo(default = True)
+	config.av.edid_override = ConfigYesNo(default = True)
 else:
-   config.av.edid_override = ConfigYesNo(default = False)
- 
+	config.av.edid_override = ConfigYesNo(default = False)
+
 class AVSwitch:
 	hw_type = HardwareInfo().get_device_name()
+
 	rates = {}  # high-level, use selectable modes.
 	modes = {}  # a list of (high-level) modes for a certain port.
 
@@ -86,9 +87,6 @@ class AVSwitch:
 		"640x480" :						{ 60: "640x480" }
 	}
 
- 	modes["Scart"] = ["PAL", "NTSC", "Multi"]
- 	# modes["DVI-PC"] = ["PC"]	
-
 	if (about.getChipSetString() in ('7366', '7376', '5272s', '7444', '7445', '7445s')):
 		modes["HDMI"] = ["720p", "1080p", "2160p", "1080i", "576p", "576i", "480p", "480i"]
 		widescreen_modes = {"720p", "1080p", "1080i", "2160p"}
@@ -131,6 +129,7 @@ class AVSwitch:
 		self.is24hzAvailable()
 		self.readPreferredModes()
 		self.createConfig()
+
 
 	def readAvailableModes(self):
 		try:
@@ -213,7 +212,7 @@ class AVSwitch:
 
 		mode_50 = modes.get(50)
 		mode_60 = modes.get(60)
-		mode_24 = modes.get(24
+		mode_24 = modes.get(24)
 
 		if mode_50 is None or force == 60:
 			mode_50 = mode_60
@@ -533,9 +532,19 @@ def InitAVSwitch():
 	config.av.colorformat = ConfigSelection(choices=colorformat_choices, default="rgb")
 	config.av.aspectratio = ConfigSelection(choices={
 			"4_3_letterbox": _("4:3 Letterbox"),
- 			"16:10": _("16:10"),
- 			"auto": _("Automatic")},
- 			default = "16:9")
+			"4_3_panscan": _("4:3 PanScan"),
+			"16_9": _("16:9"),
+			"16_9_always": _("16:9 always"),
+			"16_10_letterbox": _("16:10 Letterbox"),
+			"16_10_panscan": _("16:10 PanScan"),
+			"16_9_letterbox": _("16:9 Letterbox")},
+			default = "16_9")
+	config.av.aspect = ConfigSelection(choices={
+			"4:3": _("4:3"),
+			"16:9": _("16:9"),
+			"16:10": _("16:10"),
+			"auto": _("Automatic")},
+			default = "16:9")
 
 	# Some boxes have a redundant proc entry for policy2 choices, but some don't (The choices are from a 16:9 point of view anyways)
 	if os.path.exists("/proc/stb/video/policy2_choices"):
@@ -672,7 +681,7 @@ def InitAVSwitch():
 
 	SystemInfo["Canedidchecking"] = can_edidchecking
 
-	if can_edidchecking
+	if can_edidchecking:
 		def setEDIDBypass(configElement):
 			try:
 				f = open("/proc/stb/hdmi/bypass_edid_checking", "w")
@@ -860,7 +869,7 @@ def InitAVSwitch():
 	if have_HDRSupport:
 		def setHlgSupport(configElement):
 			open("/proc/stb/hdmi/hlg_support", "w").write(configElement.value)
-		config.av.hlg_support = ConfigSelection(default = "auto(EDID)",
+		config.av.hlg_support = ConfigSelection(default = "auto(EDID)", 
 			choices = [ ("auto(EDID)", _("controlled by HDMI")), ("yes", _("force enabled")), ("no", _("force disabled")) ])
 		config.av.hlg_support.addNotifier(setHlgSupport)
 
@@ -898,7 +907,6 @@ def InitAVSwitch():
 				f.close()
 			except:
 				pass
-
 		config.av.audio_source = ConfigSelection(choices={
 				"pcm": _("PCM"),
 				"spdif": _("SPDIF")},
@@ -1235,7 +1243,7 @@ class VideomodeHotplug:
 			print "[AVSwitch] mode %s/%s/%s went away!" % (port, mode, rate)
 			modelist = iAVSwitch.getModeList(port)
 			if not len(modelist):
-				print "[AVSwitch] sorry, no other mode is available (unplug?). Doing nothing."
+				print "[VideoHardware] sorry, no other mode is available (unplug?). Doing nothing."
 				return
 			mode = modelist[0][0]
 			rate = modelist[0][1]

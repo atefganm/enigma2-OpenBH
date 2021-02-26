@@ -105,15 +105,15 @@ class VideoWizard(WizardLanguage, Rc):
 
 		for port in self.hw.getPortList():
 			if self.hw.isPortUsed(port):
-				descr = port
-				if descr == 'HDMI' and has_dvi:
-					descr = 'DVI'
+ 				descr = port
+ 				if descr == 'HDMI' and has_dvi:
+ 					descr = 'DVI'
 				if descr == 'Scart' and has_rca and not has_scart:
-					descr = 'RCA'
+ 					descr = 'RCA'
 				if descr == 'Scart' and has_jack and not has_scart:
 					descr = 'Jack'
-				if port != "DVI-PC":
-					list.append((descr,port))
+ 				if port != "DVI-PC":
+ 					list.append((descr,port))
 		list.sort(key = lambda x: x[0])
 		print "listInputChannels:", list
 		return list
@@ -123,20 +123,20 @@ class VideoWizard(WizardLanguage, Rc):
 		self.port = index
 		self.inputSelect(index)
 
-	def inputSelectionMoved(self):
-		hw_type = HardwareInfo().get_device_name()
-		has_hdmi = HardwareInfo().has_hdmi()
+ 	def inputSelectionMoved(self):
+ 		hw_type = HardwareInfo().get_device_name()
+ 		has_hdmi = HardwareInfo().has_hdmi()
 		print "input selection moved:", self.selection
-		self.inputSelect(self.selection)
-		if self["portpic"].instance is not None:
-			picname = self.selection
-			if picname == 'HDMI' and has_dvi:
-				picname = "DVI"
+ 		self.inputSelect(self.selection)
+ 		if self["portpic"].instance is not None:
+ 			picname = self.selection
+ 			if picname == 'HDMI' and has_dvi:
+ 				picname = "DVI"
 			if picname == 'Scart' and has_rca:
-				picname = "RCA"
+ 				picname = "RCA"
 			if picname == 'Scart' and has_jack:
-				picname = "JACK"
-			self["portpic"].instance.setPixmapFromFile(resolveFilename(SCOPE_ACTIVE_SKIN, "icons/" + picname + ".png"))
+ 				picname = "JACK"
+ 			self["portpic"].instance.setPixmapFromFile(resolveFilename(SCOPE_ACTIVE_SKIN, "icons/" + picname + ".png"))
 
 	def inputSelect(self, port):
 		print "inputSelect:", port
@@ -153,7 +153,7 @@ class VideoWizard(WizardLanguage, Rc):
 		for mode in self.hw.getModeList(self.port):
 			#if mode[0] != "PC":
 				list.append((mode[0], mode[0]))
-		print "modeslist:", list
+		print "modeslist:", lis
 		return list
 
 	def modeSelectionMade(self, index):

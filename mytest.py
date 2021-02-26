@@ -678,7 +678,7 @@ Components.Network.InitNetwork()
 profile("LCD")
 import Components.Lcd
 Components.Lcd.InitLcd()
-Components.Lcd.IconCheck(
+Components.Lcd.IconCheck()
 
 if boxtype in ('dm7080', 'dm820', 'dm900', 'dm920', 'gb7252'):
 	f=open("/proc/stb/hdmi-rx/0/hdmi_rx_monitor","r")

@@ -75,6 +75,41 @@ def getChipSetString():
 		except IOError:
 			return "unavailable"
 
+def getCPUSpeedMHzInt():
+	cpu_speed = 0
+	try:
+		file = open('/proc/cpuinfo', 'r')
+		lines = file.readlines()
+		file.close()
+		for x in lines:
+			splitted = x.split(': ')
+			if len(splitted) > 1:
+				splitted[1] = splitted[1].replace('\n','')
+				if splitted[0].startswith("cpu MHz"):
+					cpu_speed = float(splitted[1].split(' ')[0])
+					break
+	except IOError:
+		print "[About] getCPUSpeedMHzInt, /proc/cpuinfo not available"
+
+	if cpu_speed == 0:
+		if getMachineBuild() in ('h7','hd51','hd52','sf4008'):
+			try:
+				import binascii
+				f = open('/sys/firmware/devicetree/base/cpus/cpu@0/clock-frequency', 'rb')
+				clockfrequency = f.read()
+				f.close()
+				cpu_speed = round(int(binascii.hexlify(clockfrequency), 16)/1000000,1)
+			except IOError:
+				cpu_speed = 1700
+		else:
+			try: # Solo4K
+				file = open('/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq', 'r')
+				cpu_speed = float(file.read()) / 1000
+				file.close()
+			except IOError:
+				print "[About] getCPUSpeedMHzInt, /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq not available"
+	return int(cpu_speed)
+
 def getCPUSpeedString():
 	if getMachineBuild() in ('u41','u42','u43'):
 		return "1,0 GHz"
@@ -82,7 +117,7 @@ def getCPUSpeedString():
 		return "1,5 GHz"
 	elif getMachineBuild() in ('formuler1tc','formuler1', 'triplex', 'tiviaraplus'):
 		return "1,3 GHz"
-	elif getMachineBuild() in ('gbmv200','u51','u52','u53','u532','u533','u54','u55','u56','u57','u5','u5pvr','h9','i55se','h9se','h9combo','h9combose','h10','cc1','sf8008','sf8008m','hd60','hd61','i55plus','ustym4kpro','beyonwizv2','viper4k','multibox','multiboxse'):
+	elif getMachineBuild() in ('gbmv200','u51','u52','u53','u532','u533','u54','u55','u56','u57','u5','u5pvr','h9','i55se','h9se','h9combo','h9combose','h10','cc1','sf8008','sf8008m','hd60','hd61','i55plus','ustym4kpro','beyonwizv2','viper4k','v8plus','multibox','plus'):
 		return "1,6 GHz"
 	elif getMachineBuild() in ('vuuno4kse','vuuno4k','dm900','dm920', 'gb7252', 'dags7252','xc7439','8100s'):
 		return "1,7 GHz"
@@ -122,10 +157,17 @@ def getCPUSpeedString():
 		except IOError:
 			return "unavailable"
 
+def getCPUArch():
+	if getBoxType() in ('osmio4k',):
+		return "ARM V7"
+	if "ARM" in getCPUString():
+		return getCPUString()
+	return _("Mipsel")
+
 def getCPUString():
 	if getMachineBuild() in ('vuduo4k','vuduo4kse','osmio4k','osmio4kplus','osmini4k','dags72604','vuuno4kse','vuuno4k', 'vuultimo4k','vusolo4k', 'vuzero4k', 'hd51', 'hd52', 'sf4008', 'dm900','dm920', 'gb7252', 'gb72604', 'dags7252', 'vs1500', 'et1x000', 'xc7439','h7','8100s','et13000','sf5008'):
 		return "Broadcom"
-	elif getMachineBuild() in ('gbmv200','u41','u42','u43','u51','u52','u53','u532','u533','u54','u55','u56','u57','u5','u5pvr','h9','i55se','h9se','h9combo','h9combose','h10','cc1','sf8008','sf8008m','hd60','hd61','i55plus','ustym4kpro','beyonwizv2','viper4k','multibox','multiboxse','hzero','h8'):
+	elif getMachineBuild() in ('gbmv200','u41','u42','u43','u51','u52','u53','u532','u533','u54','u55','u56','u57','u5','u5pvr','h9','i55se','h9se','h9combo','h9combose','h10','cc1','sf8008','sf8008m','hd60','hd61','i55plus','ustym4kpro','beyonwizv2','viper4k','v8plus','multibox','plus','hzero','h8'):
 		return "Hisilicon"
 	elif getMachineBuild() in ('alien5',):
 		return "AMlogic"
@@ -147,27 +189,31 @@ def getCPUString():
 		except IOError:
 			return "unavailable"
 
-def getCpuCoresString():
+def getCpuCoresInt():
+	cores = 0
 	try:
 		file = open('/proc/cpuinfo', 'r')
 		lines = file.readlines()
+		file.close()
 		for x in lines:
 			splitted = x.split(': ')
 			if len(splitted) > 1:
 				splitted[1] = splitted[1].replace('\n','')
 				if splitted[0].startswith("processor"):
-					if getMachineBuild() in ('gbmv200','u51','u52','u53','u532','u533','u54','u55','u56','u57','vuultimo4k','u5','u5pvr','h9','i55se','h9se','h9combo','h9combose','h10','alien5','cc1','sf8008','sf8008m','hd60','hd61','i55plus','ustym4kpro','beyonwizv2','viper4k','vuduo4k','vuduo4kse','multibox','multiboxse'):
-						cores = 4
-					elif getMachineBuild() in ('u41','u42','u43'):
-						cores = 1
-					elif int(splitted[1]) > 0:
-						cores = 2
-					else:
-						cores = 1
-		file.close()
-		return cores
+					cores = int(splitted[1]) + 1
 	except IOError:
-		return "unavailable"
+		pass
+	return cores
+
+def getCpuCoresString():
+	cores = getCpuCoresInt()
+	return {
+			0 : _("unavailable"),
+			1 : _("Single core"),
+			2 : _("Dual core"),
+			4 : _("Quad core"),
+			8 : _("Octo core")
+			}.get(cores, _("%d cores") % cores)
 
 def _ifinfo(sock, addr, ifname):
 	iface = struct.pack('256s', ifname[:15])
@@ -204,12 +250,8 @@ def getIfTransferredData(ifname):
 			return rx_bytes, tx_bytes
 
 def getPythonVersionString():
-	try:
-		import commands
-		status, output = commands.getstatusoutput("python -V")
-		return output.split(' ')[1]
-	except:
-		return _("unknown")
+	import sys
+	return "%s.%s.%s" % (sys.version_info.major,sys.version_info.minor,sys.version_info.micro)
 
 # For modules that do "from About import about"
 about = modules[__name__]
